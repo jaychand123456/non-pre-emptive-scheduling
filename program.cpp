@@ -52,8 +52,7 @@ int main() {
 		running[i].priority = 1;
 	}
 	int timer = running[0].arrival;
-	while(done.size()!=n) {
-		timer += running[0].burst;
+	while(done.size()!=n) {timer += running[0].burst;
 		running[0].turnaround = timer - running[0].arrival;
 		done.push_back(running[0]);
 		running.erase(running.begin());
@@ -84,12 +83,33 @@ int main() {
 				running[i].waiting = timer - running[i].arrival;
 				running[i].priority = 1 + ((running[i].waiting)/running[i].burst);
 		}
-		for(int i=0;i<running.size();++i) {
-			for(int j=0;j<running.size()-i-1;++j) {
-				if(running[j].priority<running[j+1].priority) {
-					node temp = running[j];
-					running[j] = running[j+1];
-					running[j+1] = temp;
+		bool notsame = false;
+		int firstpriority = running[0].priority;
+		for(int i=1;i<running.size();++i) {
+			if(running[i].priority!=firstpriority) {
+				notsame = true;
+				break;
+			}
+		}
+		if(!notsame) {
+			for(int i=0;i<running.size();++i) {
+				for(int j=0;j<running.size()-i-1;++j) {
+					if(running[j].burst>running[j+1].burst) {
+						node temp = running[j];
+						running[j] = running[j+1];
+						running[j+1] = temp;
+					}
+				}
+			}
+		}
+		else {
+			for(int i=0;i<running.size();++i) {
+				for(int j=0;j<running.size()-i-1;++j) {
+					if(running[j].priority<running[j+1].priority) {
+						node temp = running[j];
+						running[j] = running[j+1];
+						running[j+1] = temp;
+					}
 				}
 			}
 		}
@@ -98,5 +118,4 @@ int main() {
 	for(int i=0;i<n;++i) {
 		printf("P%d\t%d\t%d\n", done[i].process, done[i].waiting, done[i].turnaround);
 	}
-	return 0;
 }
