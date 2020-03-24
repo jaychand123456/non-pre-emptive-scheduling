@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+#include<conio.h>
 using namespace std;
 
 struct node {
@@ -149,4 +150,6 @@ int main() {
 	atat /= n;
 	printf("Average waiting time is: %.2f\n", awt);
 	printf("Average turnaround time is: %.2f\n", atat);
+	printf("Enter any key to exit...\n");
+	getch();
 }
