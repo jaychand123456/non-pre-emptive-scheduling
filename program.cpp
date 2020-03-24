@@ -93,7 +93,7 @@ int main() {
 		}
 		if(!notsame) {
 //			cout<<"Sorting based on time...\n";
-			//sorting running list based on time
+// 			sorting running list based on time
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].burst>running[j+1].burst) {
@@ -106,7 +106,7 @@ int main() {
 		}
 		else {
 //			cout<<"Sorting based on priority...\n";
-			//sorting running list based on priority
+// 			sorting running list based on priority
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].priority<running[j+1].priority) {
@@ -116,7 +116,7 @@ int main() {
 					}
 				}
 			}
-			//sorting based on time until same priority
+// 			sorting based on time until same priority
 			int firstpriority = running[0].priority;
 			int lastindex;
 			for(int i=1;i<running.size();++i) {
@@ -138,7 +138,15 @@ int main() {
 		}
 	}
 	printf(" * * * * * After scheduling * * * * *\n");
+	double awt=0, atat=0;
+	printf("Process\t\tWaiting Time\tTurnaround Time\n");
 	for(int i=0;i<n;++i) {
 		printf("P%d\t\t%d\t\t%d\n", done[i].process, done[i].waiting, done[i].turnaround);
+		awt += done[i].waiting;
+		atat += done[i].turnaround;
 	}
+	awt /= n;
+	atat /= n;
+	printf("Average waiting time is: %.2f\n", awt);
+	printf("Average turnaround time is: %.2f\n", atat);
 }
