@@ -38,7 +38,7 @@ int main() {
 		running.push_back(maps.begin()->second[i]);
 	}
 	maps.erase(maps.begin());
-// 	sorting running list
+	//sorting running list
 	for(int i=0;i<running.size();++i) {
 		for(int j=0;j<running.size()-i-1;++j) {
 			if(running[j].burst>running[j+1].burst) {
@@ -92,6 +92,8 @@ int main() {
 			}
 		}
 		if(!notsame) {
+//			cout<<"Sorting based on time...\n";
+			//sorting running list based on time
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].burst>running[j+1].burst) {
@@ -103,9 +105,30 @@ int main() {
 			}
 		}
 		else {
+//			cout<<"Sorting based on priority...\n";
+			//sorting running list based on priority
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].priority<running[j+1].priority) {
+						node temp = running[j];
+						running[j] = running[j+1];
+						running[j+1] = temp;
+					}
+				}
+			}
+			//sorting based on time until same priority
+			int firstpriority = running[0].priority;
+			int lastindex;
+			for(int i=1;i<running.size();++i) {
+				if(running[i].priority==firstpriority)
+					lastindex = i;
+				else
+					break;
+			}
+//			cout<<"last index is: "<<lastindex<<"\n";
+			for(int i=0;i<lastindex;++i) {
+				for(int j=0;j<lastindex-i;++j) {
+					if(running[j].burst>running[j+1].burst) {
 						node temp = running[j];
 						running[j] = running[j+1];
 						running[j+1] = temp;
@@ -116,6 +139,6 @@ int main() {
 	}
 	printf(" * * * * * After scheduling * * * * *\n");
 	for(int i=0;i<n;++i) {
-		printf("P%d\t%d\t%d\n", done[i].process, done[i].waiting, done[i].turnaround);
+		printf("P%d\t\t%d\t\t%d\n", done[i].process, done[i].waiting, done[i].turnaround);
 	}
 }
