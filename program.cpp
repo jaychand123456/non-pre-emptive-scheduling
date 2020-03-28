@@ -1,5 +1,4 @@
 #include<bits/stdc++.h>
-#include<conio.h>
 using namespace std;
 
 struct node {
@@ -19,12 +18,12 @@ int main() {
 		printf("Invalid input...");
 		return 0;
 	}
-	map<int, vector<node> > maps;
+	vector<node> pro;
 	printf("Enter the arrival time and burst time of each process:\n");
 	for(int i=0;i<n;++i) {
 		int at,bt;
-		scanf("%d", &at);
-		scanf("%d", &bt);
+		scanf("%d",&at);
+		scanf("%d",&bt);
 		if(at<0 or bt<0) {
 			printf("Invalid input...");
 			return 0;
@@ -36,18 +35,34 @@ int main() {
 		temp.waiting = 0;
 		temp.priority = 0;
 		temp.turnaround = 0;
-		maps[at].push_back(temp);
+		pro.push_back(temp);
 	}
-	map<int, vector<node> >::iterator itr;
-	//running queue
+	//running queue;
 	vector<node> running;
-	//done queue
+	//done queue;
 	vector<node> done;
-	for(int i=0;i<maps.begin()->second.size();++i) {
-		running.push_back(maps.begin()->second[i]);
+	//sorting pro queue;
+	for(int i=0;i<pro.size();++i) {
+		for(int j=0;j<pro.size()-i-1;++j) {
+			if(pro[j].arrival>pro[j+1].arrival) {
+				node temp = pro[j];
+				pro[j] = pro[j+1];
+				pro[j+1] = temp;
+			}
+		}
 	}
-	maps.erase(maps.begin());
-	//sorting running list
+	printf("After sorting, pro list is: ");
+	for(int i=0;i<pro.size();++i) {
+		printf("P%d ",pro[i].process);
+	}printf("\n");
+	running.push_back(pro[0]);
+	int at = pro[0].arrival;
+	pro.erase(pro.begin());
+	while(pro[0].arrival==at) {
+		running.push_back(pro[0]);
+		pro.erase(pro.begin());
+	}
+	//sorting running list;
 	for(int i=0;i<running.size();++i) {
 		for(int j=0;j<running.size()-i-1;++j) {
 			if(running[j].burst>running[j+1].burst) {
@@ -60,37 +75,59 @@ int main() {
 	for(int i=0;i<running.size();++i) {
 		running[i].priority = 1;
 	}
-	int timer = running[0].arrival;
-	while(done.size()!=n) {timer += running[0].burst;
+//	printf("Before while loop, running list is: ");
+//	for(int i=0;i<running.size();++i) {
+//		printf("P%d ",running[i].process);
+//	}printf("\n");
+//	printf("Before while loop, pro list is: ");
+//	for(int i=0;i<pro.size();++i) {
+//		printf("P%d ",pro[i].process);
+//	}printf("\n");
+	int timer = 0;
+	int idle = timer - 0;
+	while(done.size()!=n) {
+		if(running.size()==0) {
+//			idle += pro[0].arrival - timer;
+			running.push_back(pro[0]);
+			pro.erase(pro.begin());
+		}
+		if(timer<running[0].arrival) {
+			idle += running[0].arrival - timer;
+			timer = running[0].arrival;
+		}
+		timer += running[0].burst;
 		running[0].turnaround = timer - running[0].arrival;
 		done.push_back(running[0]);
+//		printf("Running P%d\n", running[0].process);
+//		printf("Idle time %d ", idle);
+//		printf("Timer %d ",timer);
+//		printf("Running time %d\n",running[0].arrival);
 		running.erase(running.begin());
-		for(itr=maps.begin();itr!=maps.end();++itr) {
-			if(itr->first<=timer) {
-				for(int i=0;i<itr->second.size();++i) {
-					bool inrunning = false;
-					for(int j=0;j<running.size();++j) {
-						if(running[j].process==itr->second[i].process) {
-							inrunning = true;
-							break;
-						}
-					}
-					bool indone = false;
-					for(int j=0;j<done.size();++j) {
-						if(done[j].process==itr->second[i].process) {
-							indone = true;
-							break;
-						}
-					}
-					if(inrunning==false && indone==false) {
-						running.push_back(itr->second[i]);
-					}
-				}
+		vector<int> index;
+		for(int i=0;i<pro.size();++i) {
+			if(pro[i].arrival<=timer) {
+				running.push_back(pro[i]);
+				index.push_back(i);
 			}
 		}
+		int remove = 0;
+		for(int i=0;i<index.size();++i) {
+			pro.erase(pro.begin() + index[i]-remove);
+			remove++;
+		}
+//		printf("After adding, running list is: ");
+//		for(int i=0;i<running.size();++i) {
+//			printf("P%d ",running[i].process);
+//		}
+//		printf("\n");
+//		printf("After adding, pro list is: ");
+//		for(int i=0;i<pro.size();++i) {
+//			printf("P%d ",pro[i].process);
+//		}
+//		printf("\n");
 		for(int i=0;i<running.size();++i) {
-				running[i].waiting = timer - running[i].arrival;
-				running[i].priority = 1 + ((running[i].waiting)/running[i].burst);
+			running[i].waiting = timer - running[i].arrival;
+			running[i].priority = 1 + ((running[i].waiting)/running[i].burst);
 		}
 		bool notsame = false;
 		int firstpriority = running[0].priority;
@@ -101,8 +138,6 @@ int main() {
 			}
 		}
 		if(!notsame) {
-//			cout<<"Sorting based on time...\n";
-// 			sorting running list based on time
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].burst>running[j+1].burst) {
@@ -114,8 +149,6 @@ int main() {
 			}
 		}
 		else {
-//			cout<<"Sorting based on priority...\n";
-// 			sorting running list based on priority
 			for(int i=0;i<running.size();++i) {
 				for(int j=0;j<running.size()-i-1;++j) {
 					if(running[j].priority<running[j+1].priority) {
@@ -125,18 +158,16 @@ int main() {
 					}
 				}
 			}
-// 			sorting based on time until same priority
 			int firstpriority = running[0].priority;
 			int lastindex;
 			for(int i=1;i<running.size();++i) {
-				if(running[i].priority==firstpriority)
+				if(running[i].priority == firstpriority)
 					lastindex = i;
 				else
 					break;
 			}
-//			cout<<"last index is: "<<lastindex<<"\n";
 			for(int i=0;i<lastindex;++i) {
-				for(int j=0;j<lastindex-i;++j) {
+				for(int j=0;j<lastindex-i-1;++j) {
 					if(running[j].burst>running[j+1].burst) {
 						node temp = running[j];
 						running[j] = running[j+1];
@@ -145,12 +176,22 @@ int main() {
 				}
 			}
 		}
+//		printf("Running list is: ");
+//		for(int i=0;i<running.size();++i) {
+//			printf("P%d ",running[i].process);
+//		}
+//		printf("\n");
+//		printf("Done list is: ");
+//		for(int i=0;i<done.size();++i) {
+//			printf("P%d ",done[i].process);
+//		}
+//		printf("\n");
 	}
-	printf(" * * * * * After scheduling * * * * *\n");
+	printf(" * * * * * * * * * * * * * * * After scheduling * * * * * * * * * * * * * * *\n");
 	double awt=0, atat=0;
-	printf("Process\t\tWaiting Time\tTurnaround Time\n");
+	printf("Process\t\tArrival Time\tBurst Time\tWaiting Time\tTurnaround Time\n");
 	for(int i=0;i<n;++i) {
-		printf("P%d\t\t%d\t\t%d\n", done[i].process, done[i].waiting, done[i].turnaround);
+		printf("P%d\t\t%d\t\t%d\t\t%d\t\t%d\n", done[i].process, done[i].arrival, done[i].burst, done[i].waiting, done[i].turnaround);
 		awt += done[i].waiting;
 		atat += done[i].turnaround;
 	}
@@ -158,6 +199,5 @@ int main() {
 	atat /= n;
 	printf("Average waiting time is: %.2f\n", awt);
 	printf("Average turnaround time is: %.2f\n", atat);
-	printf("Enter any key to exit...\n");
-	getch();
+	printf("Total time for which CPU was idle is: %d", idle);
 }
