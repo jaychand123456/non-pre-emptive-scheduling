@@ -15,12 +15,20 @@ int main() {
 	int n;
 	printf("Enter the number of process: ");
 	scanf("%d",&n);
+	if(n<=0) {
+		printf("Invalid input...");
+		return 0;
+	}
 	map<int, vector<node> > maps;
 	printf("Enter the arrival time and burst time of each process:\n");
 	for(int i=0;i<n;++i) {
 		int at,bt;
 		scanf("%d", &at);
 		scanf("%d", &bt);
+		if(at<0 or bt<0) {
+			printf("Invalid input...");
+			return 0;
+		}
 		node temp;
 		temp.process = i+1;
 		temp.burst = bt;
