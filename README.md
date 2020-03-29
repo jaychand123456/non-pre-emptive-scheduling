@@ -7,8 +7,8 @@ Priority for this project is calculated as follows:
 To run this file in Windows.
 ```Double click on "program.exe" file.```
 
-To run this file in Linux.
-Enter the following command(for 64 bit systems):
-```wine64 program.exe```
-Enter the following command(for 32/64 bit systems):
-```wine program.exe```
+To run this file in Linux.  
+Enter the following command(for 64 bit systems):  
+```wine64 program.exe```  
+Enter the following command(for 32/64 bit systems):  
+```wine program.exe```  
