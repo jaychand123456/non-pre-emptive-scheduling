@@ -4,7 +4,7 @@ Priority for this project is calculated as follows:
     priority = 1 + (waiting time/estimated run time);
 
 ## Executing the program
-To run this file in Windows.
+To run this file in Windows.  
 ```Double click on "program.exe" file.```
 
 To run this file in Linux.  
